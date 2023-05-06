@@ -1,0 +1,12 @@
+.seats {
+    display: flex;
+    justify-content: center;
+}
+
+.seatsVertical {
+    flex-direction: row;
+}
+
+.seatsHorizontal {
+    flex-direction: column;
+}
