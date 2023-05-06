@@ -1,10 +1,7 @@
 import TableContainer from "./TableContainer";
 import HorizontalContainer from "./UI/HorizontalContainer";
 import VerticalContainer from "./UI/VerticalContainer";
-import { modalActions } from "../store/index";
-import { useDispatch } from 'react-redux';
 
-const DUMMY_DATA = Array.from({ length: 102 }, (_, i) => i * 0.1);
 const TABLE_SIZES = [6, 22, 15, 15, 22, 22];
 
 const sumValuesUntilIndex = (arr, index) => {
@@ -16,14 +13,6 @@ const sumValuesUntilIndex = (arr, index) => {
 };
 
 const WeddingHall = () => {
-  const dispatch = useDispatch();
-  const handleOpenModal = () => {
-    dispatch(modalActions.openModal());
-  };
-
-  const handleCloseModal = () => {
-    dispatch(modalActions.closeModal());
-  };
 
   return (
     <div>

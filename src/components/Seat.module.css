@@ -3,6 +3,7 @@
     border: 2px solid #F1F6F9;
     margin: 8px;
     transition: all .2s ease;
+    position: relative;
 }
 
 .seat-left {
@@ -33,4 +34,8 @@
     background-color: #39675f;
     scale: 1.2;
     cursor: pointer;
+}
+
+.seatContainer {
+    position: relative;
 }
