@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import Modal from "./UI/Modal";
 import { useSelector } from "react-redux";
 
-const DUMMY_DATA = Array.from({ length: 106 }, (_, i) => i * 0.1);
+const DUMMY_DATA = Array(106).fill().map(() => Math.random().toFixed(2));
 
 const Seat = (props) => {
   const showNumbers = true;
@@ -28,7 +28,7 @@ const Seat = (props) => {
     >
       {showNumbers ? props.id : null}
     </div>
-    {modalOpen === id ? <Modal text={DUMMY_DATA[id-1].toFixed(2)} /> : null}
+    {modalOpen === id ? <Modal text={DUMMY_DATA[id-1]} /> : null}
     </div>
   );
 };

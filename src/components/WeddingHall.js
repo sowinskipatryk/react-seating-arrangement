@@ -1,6 +1,5 @@
 import TableContainer from "./TableContainer";
 import HorizontalContainer from "./UI/HorizontalContainer";
-import VerticalContainer from "./UI/VerticalContainer";
 
 const TABLE_SIZES = [6, 22, 17, 17, 22, 22];
 
@@ -14,8 +13,8 @@ const sumValuesUntilIndex = (arr, index) => {
 
 const WeddingHall = () => {
   return (
-    <div>
-      <VerticalContainer>
+    <div style={{position: 'relative'}}>
+      <div style={{position: 'absolute'}}>
         <TableContainer
           startId={sumValuesUntilIndex(TABLE_SIZES, 0)}
           up="6"
@@ -24,8 +23,9 @@ const WeddingHall = () => {
           right="0"
           width="360px"
           height="100px"
-          tableStyle={{ transform: "translate(-130px, 150px)" }}
+          tableStyle={{ transform: "translate(330px, -40px)" }}
         />
+      </div>
         <HorizontalContainer>
           <TableContainer
             startId={sumValuesUntilIndex(TABLE_SIZES, 1)}
@@ -44,8 +44,8 @@ const WeddingHall = () => {
             right="8"
             width="100px"
             height="600px"
-            seatLeftStyle={{ paddingTop: "60px" }}
-            seatRightStyle={{ paddingTop: "60px" }}
+            seatLeftStyle={{ paddingTop: "103px" }}
+            seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
             startId={sumValuesUntilIndex(TABLE_SIZES, 3)}
@@ -55,8 +55,8 @@ const WeddingHall = () => {
             right="9"
             width="100px"
             height="600px"
-            seatLeftStyle={{ paddingTop: "60px" }}
-            seatRightStyle={{ paddingTop: "60px" }}
+            seatLeftStyle={{ paddingTop: "103px" }}
+            seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
             startId={sumValuesUntilIndex(TABLE_SIZES, 4)}
@@ -77,7 +77,6 @@ const WeddingHall = () => {
             height="600px"
           />
         </HorizontalContainer>
-      </VerticalContainer>
     </div>
   );
 };
