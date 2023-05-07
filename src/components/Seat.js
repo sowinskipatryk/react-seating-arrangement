@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import Modal from "./UI/Modal";
 import { useSelector } from "react-redux";
 
-const DUMMY_DATA = Array.from({ length: 102 }, (_, i) => i * 0.1);
+const DUMMY_DATA = Array.from({ length: 106 }, (_, i) => i * 0.1);
 
 const Seat = (props) => {
   const showNumbers = true;

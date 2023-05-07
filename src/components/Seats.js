@@ -9,7 +9,7 @@ const Seats = (props) => {
       let id = props.startId + i; 
       seats.push(<Seat id={id} key={id} direction={props.direction} />);
     }
-    return <div className={`${styles.seats} ${styles[isVertical ? 'seatsVertical' : 'seatsHorizontal']}`}>
+    return <div className={`${styles.seats} ${styles[isVertical ? 'seatsVertical' : 'seatsHorizontal']}`} style={props.style}>
         {seats}
     </div>
 };

@@ -9,14 +9,15 @@ const TableContainer = (props) => {
     const idUp = idLeft + parseInt(props.left);
     const idRight = idUp + parseInt(props.up);
     const idDown = idRight + parseInt(props.right);
-    return <HorizontalContainer style={props.style}>
-        <Seats amount={props.left} direction='left' startId={idLeft} />
+
+    return <HorizontalContainer style={props.tableStyle}>
+        <Seats amount={props.left} direction='left' startId={idLeft} style={props.seatLeftStyle} />
         <VerticalContainer>
-            <Seats amount={props.up} direction='up' startId={idUp} />
+            <Seats amount={props.up} direction='up' startId={idUp} style={props.seatUpStyle} />
             <Table width={props.width} height={props.height} />
-            <Seats amount={props.down} direction='down' startId={idDown} />
+            <Seats amount={props.down} direction='down' startId={idDown} style={props.seatDownStyle} />
         </VerticalContainer>
-        <Seats amount={props.right} direction='right' startId={idRight} />
+        <Seats amount={props.right} direction='right' startId={idRight} style={props.seatRightStyle} />
     </HorizontalContainer>
 }
 
