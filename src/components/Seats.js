@@ -6,8 +6,8 @@ const Seats = (props) => {
     const seats = [];
 
     for (let i = 1; i <= props.amount; i++) {
-      let id = props.startId + i; 
-      seats.push(<Seat id={id} key={id} direction={props.direction} />);
+      let position = props.startPosition + i; 
+      seats.push(<Seat position={position} key={position} direction={props.direction} />);
     }
     return <div className={`${styles.seats} ${styles[isVertical ? 'seatsVertical' : 'seatsHorizontal']}`} style={props.style}>
         {seats}

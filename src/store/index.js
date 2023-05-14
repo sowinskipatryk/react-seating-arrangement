@@ -1,24 +1,14 @@
-import { createSlice, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import modalReducer from "./modalSlice";
+import tablesReducer from './tablesSlice';
 
-const initialState = { modalOpen: null };
-
-const modalSlice = createSlice({
-  name: "modal",
-  initialState,
-  reducers: {
-    openModal(state, action) {
-      state.modalOpen = action.payload;
-    },
-    closeModal(state) {
-      state.modalOpen = null;
-    },
-  },
+const rootReducer = combineReducers({
+  modal: modalReducer,
+  tables: tablesReducer,
 });
 
 const store = configureStore({
-  reducer: modalSlice.reducer,
+  reducer: rootReducer,
 });
-
-export const modalActions = modalSlice.actions;
 
 export default store;

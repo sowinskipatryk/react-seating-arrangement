@@ -1,3 +1,5 @@
+import { useDispatch } from "react-redux";
+import { tablesActions } from "../store/tablesSlice";
 import TableContainer from "./TableContainer";
 import HorizontalContainer from "./UI/HorizontalContainer";
 
@@ -12,11 +14,26 @@ const sumValuesUntilIndex = (arr, index) => {
 };
 
 const WeddingHall = () => {
+  const socket = new WebSocket('ws://localhost:8000/calculate/');
+  const dispatch = useDispatch();
+
+socket.onopen = () => {
+  console.log('WebSocket connection established.');
+};
+
+socket.onmessage = (event) => {
+  const result = JSON.parse(event.data);
+  dispatch(tablesActions.setProbabilities(result));
+};
+  const handleClick = () => {
+    socket.send('start calculation');
+  };
+
   return (
     <div style={{position: 'relative'}}>
       <div style={{position: 'absolute'}}>
         <TableContainer
-          startId={sumValuesUntilIndex(TABLE_SIZES, 0)}
+          startPosition={sumValuesUntilIndex(TABLE_SIZES, 0)}
           up="6"
           down="0"
           left="0"
@@ -28,7 +45,7 @@ const WeddingHall = () => {
       </div>
         <HorizontalContainer>
           <TableContainer
-            startId={sumValuesUntilIndex(TABLE_SIZES, 1)}
+            startPosition={sumValuesUntilIndex(TABLE_SIZES, 1)}
             up="0"
             down="0"
             left="11"
@@ -37,7 +54,7 @@ const WeddingHall = () => {
             height="600px"
           />
           <TableContainer
-            startId={sumValuesUntilIndex(TABLE_SIZES, 2)}
+            startPosition={sumValuesUntilIndex(TABLE_SIZES, 2)}
             up="0"
             down="0"
             left="9"
@@ -48,7 +65,7 @@ const WeddingHall = () => {
             seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
-            startId={sumValuesUntilIndex(TABLE_SIZES, 3)}
+            startPosition={sumValuesUntilIndex(TABLE_SIZES, 3)}
             up="0"
             down="0"
             left="8"
@@ -59,7 +76,7 @@ const WeddingHall = () => {
             seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
-            startId={sumValuesUntilIndex(TABLE_SIZES, 4)}
+            startPosition={sumValuesUntilIndex(TABLE_SIZES, 4)}
             up="0"
             down="0"
             left="11"
@@ -68,7 +85,7 @@ const WeddingHall = () => {
             height="600px"
           />
           <TableContainer
-            startId={sumValuesUntilIndex(TABLE_SIZES, 5)}
+            startPosition={sumValuesUntilIndex(TABLE_SIZES, 5)}
             up="0"
             down="0"
             left="11"
@@ -77,6 +94,7 @@ const WeddingHall = () => {
             height="600px"
           />
         </HorizontalContainer>
+        <button onClick={handleClick}>Click me</button>
     </div>
   );
 };
