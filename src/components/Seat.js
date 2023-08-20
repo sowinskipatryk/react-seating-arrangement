@@ -12,6 +12,8 @@ const Seat = (props) => {
   const dispatch = useDispatch();
   const modalOpen = useSelector(state => state.modal.modalOpen);
   const position = props.position;
+  const guests = useSelector(state => state.tables.guests);
+  const guest = guests[position-1];
   const probabilities = useSelector(state => state.tables.probabilities);
   const probabilityValue = probabilities[position-1];
   const [hue, saturation, value] = [probabilityValue * 120, 90, 80];
@@ -35,7 +37,7 @@ const Seat = (props) => {
     >
       {showNumbers ? props.position : null}
     </div>
-    {modalOpen === position ? <Modal text={probabilityValue} /> : null}
+    {modalOpen === position ? <Modal text={`${guest} ${probabilityValue}`} /> : null}
     </div>
   );
 };

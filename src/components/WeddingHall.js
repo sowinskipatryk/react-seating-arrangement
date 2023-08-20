@@ -3,7 +3,7 @@ import { tablesActions } from "../store/tablesSlice";
 import TableContainer from "./TableContainer";
 import HorizontalContainer from "./UI/HorizontalContainer";
 
-const TABLE_SIZES = [6, 22, 17, 17, 22, 22];
+const TABLE_SIZES = [6, 20, 16, 16, 20, 20];
 
 const sumValuesUntilIndex = (arr, index) => {
   let sum = 0;
@@ -23,7 +23,8 @@ socket.onopen = () => {
 
 socket.onmessage = (event) => {
   const result = JSON.parse(event.data);
-  dispatch(tablesActions.setProbabilities(result));
+  dispatch(tablesActions.setGuests(result.guests));
+  dispatch(tablesActions.setProbabilities(result.probabilities));
 };
   const handleClick = () => {
     socket.send('start calculation');
@@ -48,19 +49,19 @@ socket.onmessage = (event) => {
             startPosition={sumValuesUntilIndex(TABLE_SIZES, 1)}
             up="0"
             down="0"
-            left="11"
-            right="11"
+            left="10"
+            right="10"
             width="100px"
-            height="600px"
+            height="550px"
           />
           <TableContainer
             startPosition={sumValuesUntilIndex(TABLE_SIZES, 2)}
             up="0"
             down="0"
-            left="9"
+            left="8"
             right="8"
             width="100px"
-            height="600px"
+            height="500px"
             seatLeftStyle={{ paddingTop: "103px" }}
             seatRightStyle={{ paddingTop: "103px" }}
           />
@@ -69,9 +70,9 @@ socket.onmessage = (event) => {
             up="0"
             down="0"
             left="8"
-            right="9"
+            right="8"
             width="100px"
-            height="600px"
+            height="500px"
             seatLeftStyle={{ paddingTop: "103px" }}
             seatRightStyle={{ paddingTop: "103px" }}
           />
@@ -79,19 +80,19 @@ socket.onmessage = (event) => {
             startPosition={sumValuesUntilIndex(TABLE_SIZES, 4)}
             up="0"
             down="0"
-            left="11"
-            right="11"
+            left="10"
+            right="10"
             width="100px"
-            height="600px"
+            height="550px"
           />
           <TableContainer
             startPosition={sumValuesUntilIndex(TABLE_SIZES, 5)}
             up="0"
             down="0"
-            left="11"
-            right="11"
+            left="10"
+            right="10"
             width="100px"
-            height="600px"
+            height="550px"
           />
         </HorizontalContainer>
         <button onClick={handleClick}>Click me</button>
