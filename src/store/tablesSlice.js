@@ -1,24 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const TABLE_SIZES = [6, 20, 16, 16, 20, 20];
-const GUESTS = [
-  ];
-const arrayWithEmptyValues = Array(8).fill('Empty');
-const initialState = {sizes: TABLE_SIZES, guests: GUESTS.concat(arrayWithEmptyValues), probabilities: Array(TABLE_SIZES.reduce((acc, val) => acc + val, 0)).fill(0)};
+const seats_num = TABLE_SIZES.reduce((acc, val) => acc + val, 0);
+const initialState = {iteration: 0, arrangement: Array.from({ length: seats_num }, (_, index) => index + index), seatCosts: Array(seats_num).fill(0), score: 0.0};
 
 const tablesSlice = createSlice({
   name: "tables",
   initialState,
   reducers: {
-    setProbabilities(state, action) {
+    setSeatCosts(state, action) {
     return {      ...state,
-      probabilities: action.payload,
+      seatCosts: action.payload,
     };
 
   },
-    setGuests(state, action) {
+    setIteration(state, action) {
       return {      ...state,
-        guests: action.payload,
+        iteration: action.payload,
+      };
+
+    },
+    setArrangement(state, action) {
+      return {      ...state,
+        arrangement: action.payload,
+      };
+
+    },
+    setScore(state, action) {
+      return {      ...state,
+        score: action.payload,
       };
 
     },
