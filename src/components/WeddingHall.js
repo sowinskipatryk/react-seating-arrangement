@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { tablesActions } from "../store/tablesSlice";
 import TableContainer from "./TableContainer";
 import HorizontalContainer from "./UI/HorizontalContainer";
@@ -16,6 +16,8 @@ const sumValuesUntilIndex = (arr, index) => {
 const WeddingHall = () => {
   const socket = new WebSocket('ws://localhost:8000/calculate/');
   const dispatch = useDispatch();
+  const score = useSelector(state => state.tables.score);
+  const iteration = useSelector(state => state.tables.iteration);
 
 socket.onopen = () => {
   console.log('WebSocket connection established.');
@@ -23,8 +25,10 @@ socket.onopen = () => {
 
 socket.onmessage = (event) => {
   const result = JSON.parse(event.data);
-  dispatch(tablesActions.setGuests(result.guests));
-  dispatch(tablesActions.setProbabilities(result.probabilities));
+  dispatch(tablesActions.setArrangement(result.arrangement));
+  dispatch(tablesActions.setSeatCosts(result.seatCosts));
+  dispatch(tablesActions.setScore(result.score));
+  dispatch(tablesActions.setIteration(result.iteration));
 };
   const handleClick = () => {
     socket.send('start calculation');
@@ -96,6 +100,7 @@ socket.onmessage = (event) => {
           />
         </HorizontalContainer>
         <button onClick={handleClick}>Click me</button>
+        <h4><p>Iteration: {iteration}</p><p>Score: {score}</p></h4>
     </div>
   );
 };

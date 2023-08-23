@@ -12,11 +12,11 @@ const Seat = (props) => {
   const dispatch = useDispatch();
   const modalOpen = useSelector(state => state.modal.modalOpen);
   const position = props.position;
-  const guests = useSelector(state => state.tables.guests);
-  const guest = guests[position-1];
-  const probabilities = useSelector(state => state.tables.probabilities);
-  const probabilityValue = probabilities[position-1];
-  const [hue, saturation, value] = [probabilityValue * 120, 90, 80];
+  const arrangement = useSelector(state => state.tables.arrangement);
+  const guest = arrangement[position-1];
+  const seatCosts = useSelector(state => state.tables.seatCosts);
+  const seatCost = seatCosts[position-1] | 0;
+  const [hue, saturation, value] = [120-seatCost, 90, 80];
   const [rVal, gVal, bVal] = convert.hsv.rgb(hue, saturation, value);
   const rgbValue = `rgb(${rVal}, ${gVal}, ${bVal})`;
 
@@ -37,7 +37,7 @@ const Seat = (props) => {
     >
       {showNumbers ? props.position : null}
     </div>
-    {modalOpen === position ? <Modal text={`${guest} ${probabilityValue}`} /> : null}
+    {modalOpen === position ? <Modal text={`${guest} ${seatCost}`} /> : null}
     </div>
   );
 };
