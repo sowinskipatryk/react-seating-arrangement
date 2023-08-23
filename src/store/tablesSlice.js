@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const TABLE_SIZES = [6, 20, 16, 16, 20, 20];
-const seats_num = TABLE_SIZES.reduce((acc, val) => acc + val, 0);
-const initialState = {iteration: 0, arrangement: Array.from({ length: seats_num }, (_, index) => index + index), seatCosts: Array(seats_num).fill(0), score: 0.0};
+const TABLE_SIZES = [6, 20, 20, 16, 16, 20];
+const seatsNum = TABLE_SIZES.reduce((acc, val) => acc + val, 0);
+const initialState = {iteration: 0, arrangement: Array.from({ length: seatsNum }, (_, index) => index + index), seatCosts: Array(seatsNum).fill(0), score: 0};
 
 const tablesSlice = createSlice({
   name: "tables",

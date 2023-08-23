@@ -11,69 +11,13 @@ import pandas as pd
 import random
 import itertools
 
-# REFRESH_RATE = 5  # in seconds
-# RUNTIME = 1  # in minutes
+DATA_FILE_PATH = os.path.join(settings.BASE_DIR, 'calc', 'data_files', 'data.json')
 
-# # def load_text_file(file_name):
-# #     file_path = os.path.join(settings.BASE_DIR, 'calc', 'data_files', file_name)
-# #     with open(file_path, 'r') as file:
-# #         content = file.readlines()
-# #         content = [x.replace('\n', '') for x in content]
-# #         return content
-
-# data_file_path = os.path.join(settings.BASE_DIR, 'calc', 'data_files', 'data.xls')
-
-# table_sizes = pd.read_excel(data_file_path, 'TableSizes')['TableSizes'].to_list()
-# scores_df = pd.read_excel(data_file_path, 'GroupScores')
-
-# scores_df_swapped = scores_df.rename(columns={'Group A': 'Group B', 'Group B': 'Group A'})
-
-# merged_scores_df = pd.concat([scores_df, scores_df_swapped])
-
-# unique_scores_df = merged_scores_df.drop_duplicates(subset=['Group A', 'Group B'])
-
-# GuestListRaw = pd.read_excel(data_file_path, 'GuestList')
-
-# guest_list=GuestListRaw["Guest"].values.tolist()
-
-# pairs = list(itertools.combinations(GuestListRaw['Guest'], 2))
-
-# PairsList = pd.DataFrame(pairs, columns=['Person A', 'Person B'])
-
-# GroupRel = PairsList.merge(GuestListRaw, left_on='Person A', right_on='Guest').drop(columns=['Guest', 'Together', 'Apart', 'ScoreTogether', 'ScoreApart'])
-
-# GroupRel = GroupRel.rename(columns={'Group': 'Group A'})
-# GroupRel = GroupRel.merge(GuestListRaw, left_on='Person B', right_on='Guest').drop(columns=['Guest', 'Together', 'Apart', 'ScoreTogether', 'ScoreApart'])
-# GroupRel = GroupRel.rename(columns={'Group': 'Group B'})
-# GroupRel = GroupRel.merge(unique_scores_df, on=['Group A', 'Group B'], how='left')
-# GroupRel = GroupRel[['Person A', 'Person B', 'Score']]
-# GroupRel = GroupRel.dropna(subset=['Score'])
-
-# RelMatrixRaw=GuestListRaw.dropna(thresh=2)
-
-# Together=RelMatrixRaw[["Guest","Together","ScoreTogether"]].dropna(thresh=2)
-
-# Apart=RelMatrixRaw[["Guest","Apart","ScoreApart"]].dropna(thresh=2)
-
-# groups = unique_values = RelMatrixRaw['Group'].unique()
-
-# relationships_edges={}
-
-# # Group relationships are less important than direct relationships hence they go first
-# for row in GroupRel.values.tolist():
-#     relationships_edges.update({tuple(row[:2]): row[2]})
-
-# for element in list(zip(Together["Guest"], Together["Together"], Together['ScoreTogether'])):
-#         relationships_edges.update({element[:2]: element[2]})
-#         relationships_edges.update({element[-2::-1]: element[2]})
-        
-# for element in list(zip(Apart["Guest"], Apart["Apart"], Apart['ScoreApart'])):
-#         relationships_edges.update({element[:2]: element[2]})
-#         relationships_edges.update({element[-2::-1]: element[2]})
-
-# seats_num = sum(table_sizes)
-
-# table_count = len(table_sizes)
+def load_json_file(file_path):
+    import json
+    with open(file_path, 'r') as file:
+        content = json.load(file)
+        return content
 
 # def get_table_number(seat_number):
 #     counter = 1
@@ -90,9 +34,6 @@ import itertools
 #     a = 1 if cost_new < cost_old else np.exp((cost_old - cost_new) / temp)
 #     return a
 
-# if sum(table_sizes) > len(guest_list):
-#     guest_list.extend(['Wolne'] * (sum(table_sizes) - len(guest_list)))
-
 # temp_graph = nx.Graph()
 # for k, v in relationships_edges.items():
 #     temp_graph.add_edge(k[0], k[1], weight=v)
@@ -104,40 +45,7 @@ import itertools
 # relationships_mat_unnormed = nx.to_numpy_matrix(temp_graph.to_undirected(), nodelist=guest_list)
 # relationships_mat = relationships_mat_unnormed / 100
 
-# RelationshipMatrix=pd.DataFrame(relationships_mat)
-# RelationshipMatrix.index=guest_list
-# RelationshipMatrix.columns=guest_list
-# RelationshipMatrix = RelationshipMatrix[(RelationshipMatrix.T != 0).any()] # removes rows where all elements = 0 (no rel)
-# RelationshipMatrix = RelationshipMatrix.loc[:, (RelationshipMatrix != 0).any(axis=0)] # removes columns where all elements = 0
-
-# s = list(range(seats_num))
-# random.shuffle(s)
-# s = [ x+1 for x in s]
-# s
-# Table_Arrangement=pd.DataFrame(zip(guest_list,s),columns=["Guest Name","Assigned Seat No"])
-# Table_Arrangement["Assigned Table No"]=Table_Arrangement["Assigned Seat No"].apply(get_table_number)
-
-# for i in range(1,table_count+1):
-#     Table_Arrangement["Table No "+str(i)]=np.where(Table_Arrangement['Assigned Table No']!= i, 0, 1)
-    
-# Table_Arrangement_Transpose=Table_Arrangement.T
-# Table_Arrangement_Transpose=Table_Arrangement_Transpose.tail(len(Table_Arrangement_Transpose)-3)
-# initial_random_arrangement=Table_Arrangement_Transpose.values
-
-# initial_random_arrangement_costs = np.matrix(initial_random_arrangement) * relationships_mat * initial_random_arrangement.T
-
 # class CalculationConsumer(AsyncWebsocketConsumer):
-#     async def connect(self):
-#         await self.accept()
-
-#     async def receive(self, text_data):
-#         if text_data == 'start calculation':
-#             await self.run_simmulated_annealing()
-
-#     async def send_anneal_result(self, pos_current):
-#         result = {'pos_current': pos_current}
-#         await self.send(json.dumps(result))
-
 #     async def anneal_async(self, pos_current, temp=1.0, temp_min=0.00001, alpha=0.9, n_iter=100):
 #         cost_old = self.calculate_cost(pos_current)
 
@@ -164,31 +72,74 @@ import itertools
 #         table_cost = np.trace(table_costs)
 #         return table_cost
 
-#     def take_step(self, pos):
-#         table_seats = reshape_to_table_seats(np.matrix(pos, copy=True))
-#         # randomly swap two guests
-#         table_from, table_to = np.random.choice(table_count, 2, replace=False)
-        
-#         table_from_guests = np.where(table_seats[table_from] == 1)[1]
-#         table_to_guests = np.where(table_seats[table_to] == 1)[1]
-        
-#         table_from_guest = np.random.choice(table_from_guests)
-#         table_to_guest = np.random.choice(table_to_guests)
-        
-#         table_seats[table_from, table_from_guest] = 0
-#         table_seats[table_from, table_to_guest] = 1
-#         table_seats[table_to, table_to_guest] = 0
-#         table_seats[table_to, table_from_guest] = 1
-#         return table_seats
-
 #     def calculate_acceptance_probability(self, cost_old, cost_new, temp):
 #         a = 1 if cost_new < cost_old else np.exp((cost_old - cost_new) / temp)
 #         return a
 
-num_tables = 6
-num_seats_per_table = 20
-total_seats = num_tables * num_seats_per_table
-relationship_matrix = np.random.randint(0, 120, size=(total_seats, total_seats))
+
+data = load_json_file(DATA_FILE_PATH)
+num_seats_per_table = data['table_sizes']
+guest_rel = data['guest_relations']
+group_rel = data['group_relations']
+group_mapping = data['groups']
+guest_mapping = data['guests']
+
+num_tables = len(num_seats_per_table)
+total_seats = sum(num_seats_per_table)
+
+# Adding free seats to the pool
+for i in range(len(guest_mapping), total_seats):
+    guest_mapping[str(i)] = {'name': 'Free Seat'}
+
+relationship_matrix = np.zeros((98, 98))
+
+# Populating matrix with person to person relations
+for k,v in guest_rel.items():
+    a,b = k.strip('()').split(',')
+    relationship_matrix[int(a), int(b)] += int(v)
+    relationship_matrix[int(b), int(a)] += int(v)
+
+group_indices = {}
+for idx, item in guest_mapping.items():
+    if 'group' in item:
+        group = item['group']
+        if group not in group_indices:
+            group_indices[group] = []
+        group_indices[group].append(idx)
+
+# Populating matrix with group relations
+for k,v in group_rel.items():
+    a,b = k.strip('()').split(',')
+    group_a = group_indices[a]
+    group_b = group_indices[b]
+    for x in group_a:
+        for y in group_b:
+            relationship_matrix[int(x), int(y)] += int(v)
+
+sex_indices = {}
+for idx, item in guest_mapping.items():
+    if 'sex' in item:
+        sex = item['sex']
+        if sex not in sex_indices:
+            sex_indices[sex] = []
+        sex_indices[sex].append(idx)
+
+females = sex_indices['female']
+males = sex_indices['male']
+
+# Populating matrix with opposite sex relations
+for f in females:
+    for m in males:
+        relationship_matrix[int(f), int(m)] -= 10
+        relationship_matrix[int(m), int(f)] -= 10
+
+# Matrix Normalization
+min_value = np.min(relationship_matrix)
+max_value = np.max(relationship_matrix)
+relationship_matrix = (relationship_matrix - min_value) / (max_value - min_value)
+relationship_matrix = np.round(relationship_matrix, 3)
+
+# print(relationship_matrix)
 
 # Parameters
 initial_temperature = 100.0
@@ -245,9 +196,9 @@ class CalculationConsumer(AsyncWebsocketConsumer):
             # Prepare result data to send
             result_data = {
                 "iteration": iteration + 1,
-                "arrangement": [int(x) for x in best_arrangement.tolist()],
+                "arrangement": [guest_mapping[str(x)]['name'] for x in best_arrangement.tolist()],
                 "score": best_cost,
-                "seatCosts": [int(x) for x in current_seat_costs.tolist()]
+                "seatCosts": [float(x) for x in current_seat_costs.tolist()]
             }
             
             print(result_data)
