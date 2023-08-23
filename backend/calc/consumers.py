@@ -1,15 +1,9 @@
 import asyncio
 import json
-import random
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.conf import settings
 import os
-import matplotlib.pyplot as plt
 import numpy as np
-import networkx as nx
-import pandas as pd
-import random
-import itertools
 
 DATA_FILE_PATH = os.path.join(settings.BASE_DIR, 'calc', 'data_files', 'data.json')
 
@@ -18,17 +12,6 @@ def load_json_file(file_path):
     with open(file_path, 'r') as file:
         content = json.load(file)
         return content
-
-# def get_table_number(seat_number):
-#     counter = 1
-#     for tid, table_size in enumerate(table_sizes):
-#         if 0 < seat_number < counter + table_size:
-#             return tid + 1
-#         counter += table_size
-
-# def reshape_to_table_seats(x):
-#     table_seats = x.reshape(table_count, len(guest_list))
-#     return table_seats
 
 # def prob_accept(cost_old, cost_new, temp):
 #     a = 1 if cost_new < cost_old else np.exp((cost_old - cost_new) / temp)
@@ -87,10 +70,6 @@ guest_mapping = data['guests']
 num_tables = len(num_seats_per_table)
 total_seats = sum(num_seats_per_table)
 
-# Adding free seats to the pool
-for i in range(len(guest_mapping), total_seats):
-    guest_mapping[str(i)] = {'name': 'Free Seat'}
-
 relationship_matrix = np.zeros((98, 98))
 
 # Populating matrix with person to person relations
@@ -139,7 +118,12 @@ max_value = np.max(relationship_matrix)
 relationship_matrix = (relationship_matrix - min_value) / (max_value - min_value)
 relationship_matrix = np.round(relationship_matrix, 3)
 
-# print(relationship_matrix)
+# Adding free seats to the pool
+for i in range(len(guest_mapping), total_seats):
+    guest_mapping[str(i)] = {'name': 'Free Seat'}
+
+    relationship_matrix[i, :] = 0
+    relationship_matrix[:, i] = 0
 
 # Parameters
 initial_temperature = 100.0
