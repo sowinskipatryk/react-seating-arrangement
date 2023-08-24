@@ -146,9 +146,10 @@ class CalculationConsumer(AsyncWebsocketConsumer):
         seat_costs = np.zeros(total_seats)
         
         for i in range(total_seats):
-            left_person = seating_arrangement[i]
+            left_person = seating_arrangement[i - 1]
+            middle_person = seating_arrangement[i]
             right_person = seating_arrangement[(i + 1) % total_seats]
-            seat_costs[i] = relationship_matrix[left_person][right_person]
+            seat_costs[i] = (relationship_matrix[left_person][middle_person] + relationship_matrix[middle_person][right_person]) / 2
             total_cost += seat_costs[i]
         
         return total_cost, seat_costs

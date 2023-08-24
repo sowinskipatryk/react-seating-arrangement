@@ -1,16 +1,16 @@
 import styles from "./Seat.module.css";
 import { modalActions } from "../store/modalSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useRef } from 'react';
 import Modal from "./UI/Modal";
-import { useSelector } from "react-redux";
 import convert from 'color-convert';
-
 
 
 const Seat = (props) => {
   const showNumbers = true;
   const dispatch = useDispatch();
   const modalOpen = useSelector(state => state.modal.modalOpen);
+  const timeoutRef = useRef(null);
   const position = props.position;
   const arrangement = useSelector(state => state.tables.arrangement);
   const guest = arrangement[position-1];
@@ -23,13 +23,17 @@ const Seat = (props) => {
   const [rVal, gVal, bVal] = convert.hsv.rgb(hue, saturation, value);
   const rgbValue = `rgb(${rVal}, ${gVal}, ${bVal})`;
 
+  const handleCloseModal = () => {
+      dispatch(modalActions.closeModal())
+  };
+
   const handleOpenModal = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    };
     dispatch(modalActions.openModal(position));
   };
 
-  const handleCloseModal = () => {
-    dispatch(modalActions.closeModal());
-  };
   return (
     <div className={styles.seatContainer}>
     <div
@@ -40,7 +44,7 @@ const Seat = (props) => {
     >
       {showNumbers ? props.position : null}
     </div>
-    {modalOpen === position ? <Modal text={`${guest} ${seatCost}`} /> : null}
+    {modalOpen === position ? <Modal guestName={guest} seatCost={seatCost.toFixed(3)} onMouseEnter={handleOpenModal} onMouseLeave={handleCloseModal} /> : null}
     </div>
   );
 };

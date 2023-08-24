@@ -100,7 +100,7 @@ socket.onmessage = (event) => {
           />
         </HorizontalContainer>
         <button onClick={handleClick}>Click me</button>
-        <h4><p>Iteration: {iteration}</p><p>Score: {score}</p></h4>
+        <h4><p>Iteration: {iteration}</p><p>Score: {score.toFixed(3)}</p></h4>
     </div>
   );
 };
