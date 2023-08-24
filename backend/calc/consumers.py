@@ -67,6 +67,7 @@ group_rel = data['group_relations']
 group_mapping = data['groups']
 guest_mapping = data['guests']
 
+num_guests = len(data['guests'])
 num_tables = len(num_seats_per_table)
 total_seats = sum(num_seats_per_table)
 
@@ -77,6 +78,10 @@ for k,v in guest_rel.items():
     a,b = k.strip('()').split(',')
     relationship_matrix[int(a), int(b)] += int(v)
     relationship_matrix[int(b), int(a)] += int(v)
+
+# Adding free seats to the pool
+for i in range(len(guest_mapping), total_seats):
+    guest_mapping[str(i)] = {'name': 'Free Seat', 'group': '10'}
 
 group_indices = {}
 for idx, item in guest_mapping.items():
@@ -118,12 +123,10 @@ max_value = np.max(relationship_matrix)
 relationship_matrix = (relationship_matrix - min_value) / (max_value - min_value)
 relationship_matrix = np.round(relationship_matrix, 3)
 
-# Adding free seats to the pool
-for i in range(len(guest_mapping), total_seats):
-    guest_mapping[str(i)] = {'name': 'Free Seat'}
-
-    relationship_matrix[i, :] = 0
-    relationship_matrix[:, i] = 0
+# # Adding free seats to the pool
+# for i in range(num_guests, total_seats):
+#     relationship_matrix[i, :] = 0
+#     relationship_matrix[:, i] = 0
 
 # Parameters
 initial_temperature = 100.0
