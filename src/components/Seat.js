@@ -13,7 +13,8 @@ const Seat = (props) => {
   const timeoutRef = useRef(null);
   const position = props.position;
   const arrangement = useSelector(state => state.tables.arrangement);
-  const guest = arrangement[position-1];
+  const guestMapping = useSelector(state => state.tables.guestMapping);
+  const guest = guestMapping[arrangement[position-1]];
   const seatCosts = useSelector(state => state.tables.seatCosts);
   let seatCost = seatCosts[position-1];
   if (typeof seatCost === 'undefined') {

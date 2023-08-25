@@ -10,4 +10,30 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 1%;
+}
+
+button {
+  border: 0;
+  color: #fcfffc;
+  border-radius: 12px;
+  height: 60px;
+  font-size: 24px;
+  width: 140px;
+}
+
+button.ready {
+  background-color: rgb(61, 177, 61);
+}
+
+button.running {
+  background-color: rgb(177, 61, 61);
+}
+
+button.ready:hover {
+  background-color: rgb(20, 204, 20);
+}
+
+button.running:hover {
+  background-color: rgb(204, 20, 20);
 }

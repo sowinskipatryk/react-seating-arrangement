@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { tablesActions } from "../store/tablesSlice";
 import TableContainer from "./TableContainer";
 import HorizontalContainer from "./UI/HorizontalContainer";
-
-const TABLE_SIZES = [6, 20, 16, 16, 20, 20];
 
 const sumValuesUntilIndex = (arr, index) => {
   let sum = 0;
@@ -13,32 +12,65 @@ const sumValuesUntilIndex = (arr, index) => {
   return sum;
 };
 
+const socket = new WebSocket('ws://localhost:8000/');
+
 const WeddingHall = () => {
-  const socket = new WebSocket('ws://localhost:8000/calculate/');
   const dispatch = useDispatch();
+  const [scaleFactor, setScaleFactor] = useState(1);
+  const tableSizes = useSelector(state => state.tables.tableSizes);
   const score = useSelector(state => state.tables.score);
   const iteration = useSelector(state => state.tables.iteration);
+  const [isRunning, setIsRunning] = useState(false);
 
-socket.onopen = () => {
-  console.log('WebSocket connection established.');
-};
+  socket.onopen = () => {
+    console.log('WebSocket connection established.');
+  };
+  
+  socket.onmessage = (event) => {
+      const result = JSON.parse(event.data);
+      dispatch(tablesActions.setArrangement(result.arrangement));
+      dispatch(tablesActions.setSeatCosts(result.seatCosts));
+      dispatch(tablesActions.setScore(result.score));
+      dispatch(tablesActions.setIteration(result.iteration));
+  };
 
-socket.onmessage = (event) => {
-  const result = JSON.parse(event.data);
-  dispatch(tablesActions.setArrangement(result.arrangement));
-  dispatch(tablesActions.setSeatCosts(result.seatCosts));
-  dispatch(tablesActions.setScore(result.score));
-  dispatch(tablesActions.setIteration(result.iteration));
-};
+  socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const newScaleFactor = window.innerHeight / 930;
+      setScaleFactor(newScaleFactor);
+    };
+
+    // Initial setup
+    handleResize();
+
+    // Attach the event listener
+    window.addEventListener('resize', handleResize);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const handleClick = () => {
-    socket.send('start calculation');
+    if (!isRunning) {
+      setIsRunning(true);
+      socket.send('start');
+    } else {
+      setIsRunning(false);
+      socket.send('stop');
+    }
   };
 
   return (
-    <div style={{position: 'relative'}}>
+    <div className="simmulator" style={{ position: 'relative', transform: `scale(${scaleFactor})` }}>
       <div style={{position: 'absolute'}}>
         <TableContainer
-          startPosition={sumValuesUntilIndex(TABLE_SIZES, 0)}
+          startPosition={sumValuesUntilIndex(tableSizes, 0)}
           up="6"
           down="0"
           left="0"
@@ -50,7 +82,7 @@ socket.onmessage = (event) => {
       </div>
         <HorizontalContainer>
           <TableContainer
-            startPosition={sumValuesUntilIndex(TABLE_SIZES, 1)}
+            startPosition={sumValuesUntilIndex(tableSizes, 1)}
             up="0"
             down="0"
             left="10"
@@ -59,7 +91,7 @@ socket.onmessage = (event) => {
             height="550px"
           />
           <TableContainer
-            startPosition={sumValuesUntilIndex(TABLE_SIZES, 2)}
+            startPosition={sumValuesUntilIndex(tableSizes, 2)}
             up="0"
             down="0"
             left="8"
@@ -70,7 +102,7 @@ socket.onmessage = (event) => {
             seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
-            startPosition={sumValuesUntilIndex(TABLE_SIZES, 3)}
+            startPosition={sumValuesUntilIndex(tableSizes, 3)}
             up="0"
             down="0"
             left="8"
@@ -81,7 +113,7 @@ socket.onmessage = (event) => {
             seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
-            startPosition={sumValuesUntilIndex(TABLE_SIZES, 4)}
+            startPosition={sumValuesUntilIndex(tableSizes, 4)}
             up="0"
             down="0"
             left="10"
@@ -90,7 +122,7 @@ socket.onmessage = (event) => {
             height="550px"
           />
           <TableContainer
-            startPosition={sumValuesUntilIndex(TABLE_SIZES, 5)}
+            startPosition={sumValuesUntilIndex(tableSizes, 5)}
             up="0"
             down="0"
             left="10"
@@ -99,7 +131,7 @@ socket.onmessage = (event) => {
             height="550px"
           />
         </HorizontalContainer>
-        <button onClick={handleClick}>Click me</button>
+        <button className={isRunning ? 'running' : 'ready'} onClick={handleClick}>{isRunning ? 'STOP' : 'RUN'}</button>
         <h4><p>Iteration: {iteration}</p><p>Score: {score.toFixed(3)}</p></h4>
     </div>
   );

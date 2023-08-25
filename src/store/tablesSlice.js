@@ -1,8 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import guestMapping from '../assets/guest_mapping.json';
 
-const TABLE_SIZES = [6, 20, 20, 16, 16, 20];
-const seatsNum = TABLE_SIZES.reduce((acc, val) => acc + val, 0);
-const initialState = {iteration: 0, arrangement: Array.from({ length: seatsNum }, (_, index) => index + index), seatCosts: Array(seatsNum).fill(0), score: 0};
+const tableSizes = [6, 20, 16, 16, 20, 20];
+const guestsNum = Object.values(guestMapping).length;
+const seatsNum = tableSizes.reduce((acc, val) => acc + val, 0);
+
+for (let i = guestsNum; i <= seatsNum; i++) {
+  guestMapping[i] = 'Free Seat';
+}
+
+const initialState = {iteration: 0, arrangement: Array.from({ length: seatsNum }, (_, index) => index + 1), seatCosts: Array(seatsNum).fill(0), score: 0, guestMapping, tableSizes};
 
 const tablesSlice = createSlice({
   name: "tables",
