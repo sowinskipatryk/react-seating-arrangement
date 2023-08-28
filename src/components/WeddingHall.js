@@ -28,10 +28,14 @@ const WeddingHall = () => {
   
   socket.onmessage = (event) => {
       const result = JSON.parse(event.data);
+      if (!result.isRunning) {
+        setIsRunning(false);
+      } else {
       dispatch(tablesActions.setArrangement(result.arrangement));
       dispatch(tablesActions.setSeatCosts(result.seatCosts));
       dispatch(tablesActions.setScore(result.score));
       dispatch(tablesActions.setIteration(result.iteration));
+      }
   };
 
   socket.onerror = (error) => {

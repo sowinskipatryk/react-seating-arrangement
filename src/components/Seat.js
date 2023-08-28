@@ -24,9 +24,7 @@ const Seat = (props) => {
   const initials = guest === 'Free Seat' ? '' : getInitials(guest);
   const seatCosts = useSelector(state => state.tables.seatCosts);
   let seatCost = seatCosts[position-1];
-  if (typeof seatCost === 'undefined') {
-    seatCost = 1;
-  }
+  
   const [hue, saturation, value] = [120 - (120 * seatCost), 90, 80];
   const [rVal, gVal, bVal] = convert.hsv.rgb(hue, saturation, value);
   const rgbValue = `rgb(${rVal}, ${gVal}, ${bVal})`;

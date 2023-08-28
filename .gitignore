@@ -27,4 +27,4 @@ yarn-error.log*
 backend/calc/data_files/guests.txt
 backend/calc/data_files/data.xls
 backend/calc/data_files/data.json
-src/assets/guest_mapping.json
+src/assets/*

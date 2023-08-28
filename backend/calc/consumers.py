@@ -207,6 +207,7 @@ class CalculationConsumer(AsyncWebsocketConsumer):
 
             # Prepare result data to send
             result_data = {
+                "isRunning": True,
                 "iteration": iteration + 1,
                 "arrangement": [str(x) for x in best_arrangement.tolist()],
                 "score": best_cost,
@@ -218,3 +219,9 @@ class CalculationConsumer(AsyncWebsocketConsumer):
             # Send result data to WebSocket client
             await self.send(json.dumps(result_data))
             await asyncio.sleep(0.02)
+
+        result_data = {
+            "isRunning": False,
+        }
+
+        await self.send(json.dumps(result_data))
