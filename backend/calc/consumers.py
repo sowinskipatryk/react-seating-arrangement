@@ -14,15 +14,46 @@ def load_json_file(file_path):
         return content
 
 data = load_json_file(DATA_FILE_PATH)
-num_seats_per_table = data['table_sizes']
+tables_structure = data['tables_structure']
 guest_rel = data['guest_relations']
 group_rel = data['group_relations']
 group_mapping = data['groups']
 guest_mapping = data['guests']
 
 num_guests = len(data['guests'])
-num_tables = len(num_seats_per_table)
-total_seats = sum(num_seats_per_table)
+num_tables = len(tables_structure)
+total_seats = sum(sum(row) for row in tables_structure)
+
+def get_neighbours(idx):
+    remaining_idx = idx
+    found_seat = False
+    for table_id, table_seats in enumerate(tables_structure):
+        if found_seat:
+            break
+        for direction_idx, seats_num in enumerate(table_seats):
+            if remaining_idx >= seats_num :
+                remaining_idx -= seats_num 
+            else:
+                found_seat = True
+                target_table_id = table_id
+                target_table_seats = table_seats
+                break
+
+    if remaining_idx == 0 and (direction_idx == 0 or (direction_idx > 0 and target_table_seats[direction_idx - 1] == 0)):
+        left = None
+    else:
+        left = idx - 1
+
+    if remaining_idx + 1 == target_table_seats[direction_idx] and (direction_idx + 1 == len(target_table_seats) or (direction_idx + 1 < len(target_table_seats) and target_table_seats[direction_idx + 1] == 0)):
+        right = None
+    else:
+        right = idx + 1
+
+    return left, right
+
+seat_neighbours = {}
+for i in range(total_seats):
+    seat_neighbours[i] = get_neighbours(i)
 
 relationship_matrix = np.zeros((98, 98))
 
@@ -110,10 +141,23 @@ class CalculationConsumer(AsyncWebsocketConsumer):
         seat_costs = np.zeros(total_seats)
         
         for i in range(total_seats):
-            left_person = seating_arrangement[i - 1]
+            left_person_id, right_person_id = seat_neighbours[i]
+
             middle_person = seating_arrangement[i]
-            right_person = seating_arrangement[(i + 1) % total_seats]
-            seat_costs[i] = (relationship_matrix[left_person][middle_person] + relationship_matrix[middle_person][right_person]) / 2
+
+            if left_person_id:
+                left_person = seating_arrangement[left_person_id]
+                relationship_left = relationship_matrix[left_person][middle_person]
+            else:
+                relationship_left = 1
+
+            if right_person_id:
+                right_person = seating_arrangement[right_person_id]
+                relationship_right = relationship_matrix[middle_person][right_person]
+            else:
+                relationship_right = 1
+
+            seat_costs[i] = (relationship_left + relationship_right) / 2
             total_cost += seat_costs[i]
         
         return total_cost, seat_costs
@@ -148,7 +192,7 @@ class CalculationConsumer(AsyncWebsocketConsumer):
                     best_seat_costs = new_seat_costs
             
             temperature *= cooling_rate
-            
+
             # Prepare result data to send
             result_data = {
                 "iteration": iteration + 1,
