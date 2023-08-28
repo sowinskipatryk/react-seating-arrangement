@@ -5,10 +5,10 @@ import HorizontalContainer from './UI/HorizontalContainer';
 
 const TableContainer = (props) => {
     const startPosition = parseInt(props.startPosition);
-    const positionLeft = startPosition;
-    const positionUp = positionLeft + parseInt(props.left);
+    const positionUp = startPosition;
     const positionRight = positionUp + parseInt(props.up);
     const positionDown = positionRight + parseInt(props.right);
+    const positionLeft = positionDown + parseInt(props.down);
 
     return <HorizontalContainer style={props.tableStyle}>
         <Seats amount={props.left} direction='left' startPosition={positionLeft} style={props.seatLeftStyle} />

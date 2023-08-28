@@ -4,6 +4,10 @@
     margin: 8px;
     transition: all .2s ease;
     position: relative;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .seat-left {

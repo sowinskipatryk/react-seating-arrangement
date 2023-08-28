@@ -89,6 +89,7 @@ const WeddingHall = () => {
             right="10"
             width="100px"
             height="550px"
+            seatLeftStyle={{ flexDirection: 'column-reverse' }}
           />
           <TableContainer
             startPosition={sumValuesUntilIndex(tableSizes, 2)}
@@ -98,7 +99,7 @@ const WeddingHall = () => {
             right="8"
             width="100px"
             height="500px"
-            seatLeftStyle={{ paddingTop: "103px" }}
+            seatLeftStyle={{ paddingTop: "103px", flexDirection: 'column-reverse' }}
             seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
@@ -109,7 +110,7 @@ const WeddingHall = () => {
             right="8"
             width="100px"
             height="500px"
-            seatLeftStyle={{ paddingTop: "103px" }}
+            seatLeftStyle={{ paddingTop: "103px", flexDirection: 'column-reverse' }}
             seatRightStyle={{ paddingTop: "103px" }}
           />
           <TableContainer
@@ -120,6 +121,7 @@ const WeddingHall = () => {
             right="10"
             width="100px"
             height="550px"
+            seatLeftStyle={{ flexDirection: 'column-reverse' }}
           />
           <TableContainer
             startPosition={sumValuesUntilIndex(tableSizes, 5)}
@@ -129,6 +131,7 @@ const WeddingHall = () => {
             right="10"
             width="100px"
             height="550px"
+            seatLeftStyle={{ flexDirection: 'column-reverse' }}
           />
         </HorizontalContainer>
         <button className={isRunning ? 'running' : 'ready'} onClick={handleClick}>{isRunning ? 'STOP' : 'RUN'}</button>

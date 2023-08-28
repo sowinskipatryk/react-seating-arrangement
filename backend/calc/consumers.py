@@ -51,13 +51,14 @@ def get_neighbours(idx):
 
     return left, right
 
+# Preparing personal relations
 seat_neighbours = {}
 for i in range(total_seats):
     seat_neighbours[i] = get_neighbours(i)
 
 relationship_matrix = np.zeros((98, 98))
 
-# Populating matrix with person to person relations
+# Populating matrix with personal relations
 for k,v in guest_rel.items():
     a,b = k.strip('()').split(',')
     relationship_matrix[int(a), int(b)] += int(v)
@@ -67,6 +68,7 @@ for k,v in guest_rel.items():
 for i in range(len(guest_mapping), total_seats):
     guest_mapping[str(i)] = {'name': 'Free Seat', 'group': '10'}
 
+# Preparing group relations
 group_indices = {}
 for idx, item in guest_mapping.items():
     if 'group' in item:
@@ -84,6 +86,7 @@ for k,v in group_rel.items():
         for y in group_b:
             relationship_matrix[int(x), int(y)] += int(v)
 
+# Preparing opposite sex relations
 sex_indices = {}
 for idx, item in guest_mapping.items():
     if 'sex' in item:
@@ -107,10 +110,13 @@ max_value = np.max(relationship_matrix)
 relationship_matrix = (relationship_matrix - min_value) / (max_value - min_value)
 relationship_matrix = np.round(relationship_matrix, 3)
 
-# # Adding free seats to the pool
-# for i in range(num_guests, total_seats):
-#     relationship_matrix[i, :] = 0
-#     relationship_matrix[:, i] = 0
+# Set diagonal values to zero
+np.fill_diagonal(relationship_matrix, 0)
+
+# Penalizing free seats next to guests and each other
+for i in range(num_guests, total_seats):
+    relationship_matrix[i, :] = 1
+    relationship_matrix[:, i] = 1
 
 # Parameters
 initial_temperature = 100.0
@@ -149,13 +155,19 @@ class CalculationConsumer(AsyncWebsocketConsumer):
                 left_person = seating_arrangement[left_person_id]
                 relationship_left = relationship_matrix[left_person][middle_person]
             else:
-                relationship_left = 1
+                if seating_arrangement[i] < num_guests:
+                    relationship_left = 1
+                else:
+                    relationship_left = 0
 
             if right_person_id:
                 right_person = seating_arrangement[right_person_id]
                 relationship_right = relationship_matrix[middle_person][right_person]
             else:
-                relationship_right = 1
+                if seating_arrangement[i] < num_guests:
+                    relationship_right = 1
+                else:
+                    relationship_right = 0
 
             seat_costs[i] = (relationship_left + relationship_right) / 2
             total_cost += seat_costs[i]
@@ -205,4 +217,4 @@ class CalculationConsumer(AsyncWebsocketConsumer):
 
             # Send result data to WebSocket client
             await self.send(json.dumps(result_data))
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.02)

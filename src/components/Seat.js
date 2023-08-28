@@ -5,6 +5,12 @@ import { useRef } from 'react';
 import Modal from "./UI/Modal";
 import convert from 'color-convert';
 
+function getInitials(str) {
+  const words = str.split(' ');
+  const firstLetters = words.map(word => word.charAt(0));
+  const result = firstLetters.join('');
+  return result;
+}
 
 const Seat = (props) => {
   const showNumbers = true;
@@ -15,6 +21,7 @@ const Seat = (props) => {
   const arrangement = useSelector(state => state.tables.arrangement);
   const guestMapping = useSelector(state => state.tables.guestMapping);
   const guest = guestMapping[arrangement[position-1]];
+  const initials = guest === 'Free Seat' ? '' : getInitials(guest);
   const seatCosts = useSelector(state => state.tables.seatCosts);
   let seatCost = seatCosts[position-1];
   if (typeof seatCost === 'undefined') {
@@ -43,7 +50,7 @@ const Seat = (props) => {
       onMouseLeave={handleCloseModal}
       style={{backgroundColor: rgbValue}}
     >
-      {showNumbers ? props.position : null}
+      {showNumbers ? props.position : initials}
     </div>
     {modalOpen === position ? <Modal guestName={guest} seatCost={seatCost.toFixed(3)} onMouseEnter={handleOpenModal} onMouseLeave={handleCloseModal} /> : null}
     </div>
